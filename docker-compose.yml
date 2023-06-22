@@ -2,12 +2,24 @@ version: '3'
 services:
   app:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile
       args:
         - BACK_API_URL=${BACK_API_URL}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
+      - '3000:3000'
+      - '3015:3015'
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
       - '80:80'
       - '443:443'
+    depends_on:
+      - app
