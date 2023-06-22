@@ -1,39 +1,26 @@
+// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { readFileSync } from 'fs';
-import { createServer } from 'http';
-import { Server as HttpsServer } from 'https';
-import { ConfigService } from '@nestjs/config';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { SocketIoAdapter } from './socket/socket.io.adapter';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as fs from 'fs';
+import * as https from 'https';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const configService = app.get(ConfigService);
+  let app;
 
-  let server = null;
-
-  if (configService.get('NODE_ENV') === 'production') {
-    // In production mode, use HTTPS
+  if (process.env.NODE_ENV === 'production') {
     const httpsOptions = {
-      key: readFileSync(`${configService.get('SSL_KEY_PATH')}`),
-      cert: readFileSync(`${configService.get('SSL_CERT_PATH')}`),
+      key: fs.readFileSync(process.env.SSL_KEY_PATH),
+      cert: fs.readFileSync(process.env.SSL_CERT_PATH),
     };
-    server = new HttpsServer(
+    app = await NestFactory.create(AppModule, new ExpressAdapter(), {
       httpsOptions,
-      app.getHttpAdapter().getHttpServer(),
-    );
+    });
   } else {
-    // In development mode, use HTTP
-    server = createServer(app.getHttpAdapter().getHttpServer());
+    app = await NestFactory.create(AppModule, new ExpressAdapter());
   }
 
-  // use custom adapter
-  app.useWebSocketAdapter(new SocketIoAdapter(app, server));
-
-  const port = configService.get('PORT') || 3000;
-  server.listen(port);
-  console.log(`listening on port ${port}`);
+  await app.listen(3000, () => console.log('Server is listening on port 3000'));
 }
 
 bootstrap();

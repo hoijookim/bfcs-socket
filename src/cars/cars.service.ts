@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
 import * as https from 'https';
@@ -25,12 +24,14 @@ export class CarsService {
     this.httpClient = axios.create(axiosOptions);
   }
 
-  async getCars(): Promise<string[]> {
-    const response = await this.httpClient.get(
-      `${this.configService.get('BACK_API_URL')}/truck/list`,
-    );
-    const cars = response.data?.map((item) => item.serial) || [];
-    console.log('response', cars);
-    return cars;
+  getCars(): Promise<string[]> {
+    console.log('getCars()::');
+    return this.httpClient
+      .get(`${this.configService.get('BACK_API_URL')}/truck/list`)
+      .then((response) => {
+        const cars = response.data?.map((item) => item.serial) || [];
+        console.log('response', cars);
+        return cars;
+      });
   }
 }

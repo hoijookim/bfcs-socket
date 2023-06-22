@@ -9,10 +9,12 @@ export class SocketIoAdapter extends IoAdapter {
     app: INestApplicationContext,
     private readonly server: HttpServer | SecureServer,
   ) {
+    console.log('hello');
     super(app);
   }
 
   createIOServer(port: number, options?: any): any {
+    console.log('server', port, options);
     return new Server(this.server, options);
   }
 }

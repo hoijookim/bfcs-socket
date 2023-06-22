@@ -8,21 +8,25 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CarsService } from '../cars/cars.service';
 
-@WebSocketGateway({
+@WebSocketGateway(3015, {
   cors: {
     origin: true,
     credentials: true,
   },
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private cars: string[] = [];
   constructor(private carsService: CarsService) {}
 
   @WebSocketServer() server: Server;
 
   async handleConnection(client: Socket, ...args: any[]) {
+    if (this.cars.length === 0) {
+      this.cars = await this.carsService.getCars(); // 초기에만 데이터를 가져옴
+    }
     console.log('connection...');
-    const cars = await this.carsService.getCars();
-    cars.forEach((car) => {
+
+    this.cars.forEach((car) => {
       client.on(`/can/${car}/battery`, (data: any) => {
         console.log('batterydata received : ', car, data.toString('utf-8'));
         // 연결된 모든 소켓
