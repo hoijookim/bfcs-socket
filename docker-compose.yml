@@ -8,3 +8,4 @@ services:
         - BACK_API_URL=${BACK_API_URL}
     ports:
       - '80:80'
+      - '3015:3015'
