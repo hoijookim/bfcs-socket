@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
       args:
         - BACK_API_URL=${BACK_API_URL}
+    volumes:
+      - ./certificates:/etc/letsencrypt/live/example.com        
     ports:
       - '80:80'
       - '3015:3015'
