@@ -7,8 +7,7 @@ services:
       args:
         - BACK_API_URL=${BACK_API_URL}
     volumes:
-      - ./certificates:/etc/letsencrypt/live/firstcorea.com        
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - '80:80'
       - '443:443'
-
