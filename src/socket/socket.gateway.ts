@@ -46,11 +46,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('socket_evt_data')
   handleMessage(client: Socket, data: any): void {
-    console.log(
-      'socket.io server received : ',
-      typeof data,
-      data.toString('utf-8'),
-    );
+    console.log('socket.io server received : ', data.toString('utf-8'));
     client.broadcast.emit('socket_evt_data', data.toString('utf-8'));
   }
 }

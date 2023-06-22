@@ -1,9 +1,8 @@
-// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
-import * as https from 'https';
 
 async function bootstrap() {
   let app;
@@ -20,7 +19,12 @@ async function bootstrap() {
     app = await NestFactory.create(AppModule, new ExpressAdapter());
   }
 
-  await app.listen(3000, () => console.log('Server is listening on port 3000'));
+  const configService = app.get(ConfigService);
+  const port = configService.get('PORT') || 3000;
+
+  await app.listen(port, () =>
+    console.log(`Server is listening on port ${port}`),
+  );
 }
 
 bootstrap();

@@ -25,12 +25,10 @@ export class CarsService {
   }
 
   getCars(): Promise<string[]> {
-    console.log('getCars()::');
     return this.httpClient
       .get(`${this.configService.get('BACK_API_URL')}/truck/list`)
       .then((response) => {
         const cars = response.data?.map((item) => item.serial) || [];
-        console.log('response', cars);
         return cars;
       });
   }
