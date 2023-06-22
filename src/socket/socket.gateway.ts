@@ -1,4 +1,3 @@
-// socket.gateway.ts
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -7,9 +6,9 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { CarsService } from './cars/cars.service';
+import { CarsService } from '../cars/cars.service';
 
-@WebSocketGateway(3015, {
+@WebSocketGateway({
   cors: {
     origin: true,
     credentials: true,

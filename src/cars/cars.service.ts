@@ -1,27 +1,35 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { lastValueFrom } from 'rxjs';
+import axios, { AxiosInstance } from 'axios';
+import * as https from 'https';
+import * as fs from 'fs';
 
 @Injectable()
 export class CarsService {
-  constructor(
-    private httpService: HttpService,
-    private configService: ConfigService,
-  ) {}
+  private httpClient: AxiosInstance;
+
+  constructor(private configService: ConfigService) {
+    let axiosOptions = {};
+    if (configService.get('NODE_ENV') === 'production') {
+      const certPath = configService.get('SSL_CERT_PATH');
+      const keyPath = configService.get('SSL_KEY_PATH');
+      axiosOptions = {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+          cert: fs.readFileSync(certPath),
+          key: fs.readFileSync(keyPath),
+        }),
+      };
+    }
+    this.httpClient = axios.create(axiosOptions);
+  }
+
   async getCars(): Promise<string[]> {
-    const apiUrl = this.configService.get<string>('BACK_API_URL');
-    const response$ = this.httpService.get(`${apiUrl}/truck/list`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const response = await lastValueFrom(response$);
-    const cars = [];
-    response.data &&
-      response.data.map((item) => {
-        cars.push(item.serial);
-      });
+    const response = await this.httpClient.get(
+      `${this.configService.get('BACK_API_URL')}/truck/list`,
+    );
+    const cars = response.data?.map((item) => item.serial) || [];
     console.log('response', cars);
     return cars;
   }
