@@ -10,7 +10,7 @@ import { CarsService } from '../cars/cars.service';
 
 @WebSocketGateway({
   cors: {
-    origin: 'https://front-test.firstcorea.com',
+    origin: true,
     methods: ['GET', 'POST'],
     allowedHeaders: ['my-custom-header'],
     credentials: true,
