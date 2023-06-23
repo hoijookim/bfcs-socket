@@ -13,5 +13,5 @@ ENV BACK_API_URL=${BACK_API_URL}
 
 RUN npm run build
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:prod"]
 
