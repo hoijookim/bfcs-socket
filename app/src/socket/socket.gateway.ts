@@ -8,7 +8,14 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CarsService } from '../cars/cars.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'https://front-test.firstcorea.com',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
+})
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private cars: string[] = [];
   constructor(private carsService: CarsService) {}
