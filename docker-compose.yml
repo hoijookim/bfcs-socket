@@ -8,6 +8,8 @@ services:
         - BACK_API_URL=${BACK_API_URL}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - '3000:3000'
 
   nginx:
     build:
