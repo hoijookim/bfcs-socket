@@ -8,12 +8,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { CarsService } from '../cars/cars.service';
 
-@WebSocketGateway({
-  cors: {
-    origin: true,
-    credentials: true,
-  },
-})
+@WebSocketGateway()
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private cars: string[] = [];
   constructor(private carsService: CarsService) {}

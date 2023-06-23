@@ -19,6 +19,14 @@ async function bootstrap() {
     app = await NestFactory.create(AppModule, new ExpressAdapter());
   }
 
+  // Enable CORS
+  app.enableCors({
+    origin: 'https://front-test.firstcorea.com',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept',
+    credentials: true,
+  });
+
   const configService = app.get(ConfigService);
   const port = configService.get('PORT') || 3000;
 
